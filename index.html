@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Passport Size Image Maker – Free Online Passport Photo Maker</title>
+<meta name="description" content="Make passport size photos online. Remove the background automatically, pick any background colour, adjust brightness and sharpness, add a watermark and download a print-ready 4x6 sheet. Photos stay on your device.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#10213d;--mut:#5b6b85;--paper:#eaeff6;--line:#cfd8e5;--acc:#c9321f;--blue:#1d4ed8;color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+header,main,footer{max-width:1100px;margin:0 auto;padding-left:20px;padding-right:20px}
+header{padding-top:28px;padding-bottom:8px}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.05;margin:0 0 8px;font-weight:800;letter-spacing:-.02em}
+header p{margin:0;max-width:58ch;color:var(--mut)}
+main{padding-top:16px;padding-bottom:32px;display:grid;grid-template-columns:minmax(260px,430px) 1fr;gap:32px;align-items:start}
+.stage{position:sticky;top:12px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.frame{--r:.7778;--vh:66vh;position:relative;aspect-ratio:var(--r);width:min(100%,calc(var(--vh)*var(--r)));background:#fff;box-shadow:0 0 0 1px var(--line),0 18px 40px -22px rgba(16,33,61,.55);overflow:hidden}
+#drop{position:absolute;inset:0;margin:10px;border:2px dashed var(--line);display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;padding:20px;color:var(--mut)}
+#drop .row{justify-content:center;margin:6px 0 0}
+#drop b{color:var(--ink);font-size:20px}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);background:#000}
+.cambar{position:absolute;left:0;right:0;bottom:0;display:flex;gap:8px;justify-content:center;padding:14px 10px;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.guide{position:absolute;left:24%;right:24%;top:8%;height:62%;border:2px dashed rgba(29,78,216,.75);border-radius:50%;pointer-events:none}
+.scan{display:none;position:absolute;left:0;right:0;top:0;height:3px;background:var(--acc);box-shadow:0 0 18px 6px rgba(201,50,31,.55)}
+.scanning .scan{display:block;animation:sc 1s ease-in-out infinite alternate}
+.scanning canvas{filter:saturate(.4) brightness(.9)}
+@keyframes sc{to{top:calc(100% - 3px)}}
+@media(prefers-reduced-motion:reduce){.scanning .scan{animation:none;top:50%}}
+#status{margin:0;font-size:14px;color:var(--mut);min-height:42px;text-align:center;max-width:44ch}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px}
+.grp{padding:18px 20px;border-top:1px solid var(--line)}
+.grp:first-child{border-top:0}
+h2{font-size:18px;margin:0 0 12px;font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.row:last-child{margin-bottom:0}
+button,select,input{font:inherit}
+.btn{border:1px solid var(--ink);background:#fff;color:var(--ink);padding:9px 14px;border-radius:6px;cursor:pointer;font-weight:600}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn:hover{filter:brightness(.94)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+select,input[type=text]{padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);max-width:100%}
+input[type=text]{flex:1;min-width:160px}
+input[type=color]{width:44px;height:36px;padding:2px;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:pointer}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.sl{display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:14px;margin-bottom:8px}
+.sl input{grid-column:1/3;width:100%;accent-color:var(--acc)}
+.sl output{color:var(--mut);font-variant-numeric:tabular-nums}
+.sw{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sw button{width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px}
+.link{background:none;border:0;color:var(--blue);text-decoration:underline;cursor:pointer;padding:0}
+footer{padding-bottom:36px;color:var(--mut);font-size:14px}
+@media(max-width:860px){main{grid-template-columns:1fr;gap:16px}.stage{top:0;z-index:5;background:var(--paper);padding:8px 0}.frame{--vh:32vh}#status{min-height:21px}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Passport size image maker</h1>
+  <p>Take a selfie or upload any photo, remove the background in one click, choose a colour and download a print-ready sheet. Your photo is processed in your browser and never uploaded.</p>
+</header>
+
+<main>
+  <section class="stage" aria-label="Photo preview">
+    <div class="frame" id="frame">
+      <div id="drop"><b>Add your photo</b><span>Take a selfie or upload any image. JPG, PNG, WebP, HEIC (iPhone) and more all work.</span>
+        <div class="row"><button class="btn pri" id="cam2" type="button">Take a photo</button><label class="btn" for="file">Upload a photo</label></div></div>
+      <canvas id="cv" hidden></canvas>
+      <video id="vid" playsinline muted hidden></video>
+      <div class="guide" id="guide" hidden></div>
+      <div class="scan"></div>
+      <div class="cambar" id="cambar" hidden><button class="btn pri" id="snap" type="button">Capture</button><button class="btn" id="stop" type="button">Cancel</button></div>
+    </div>
+    <p id="status" role="status">Front-facing photo, even light, plain background works best.</p>
+  </section>
+
+  <section class="panel" aria-label="Editing tools">
+    <input type="file" id="file" class="vh" accept="image/*,.heic,.heif,.avif,.webp,.bmp,.gif,.tif,.tiff,.jfif,.jpe,.ico,.svg">
+
+    <div class="grp">
+      <h2>Photo size</h2>
+      <div class="row">
+        <select id="size" aria-label="Photo size">
+          <option value="35x45">35 × 45 mm (Pakistan, UK, EU, Australia)</option>
+          <option value="50.8x50.8">2 × 2 in (USA, India)</option>
+          <option value="33x48">33 × 48 mm (China)</option>
+          <option value="35x35">35 × 35 mm (square)</option>
+        </select>
+        <button class="btn" id="rot" type="button">Rotate 90°</button>
+        <button class="btn" id="cam" type="button">Take a photo</button>
+        <label class="btn" for="file">Upload a photo</label>
+      </div>
+    </div>
+
+    <div class="grp">
+      <h2>Background</h2>
+      <div class="row">
+        <button class="btn pri" id="cut" type="button">Scan face and remove background</button>
+        <button class="link" id="orig" type="button">Use original background</button>
+      </div>
+      <div class="row sw">
+        <button type="button" data-c="#ffffff" style="background:#fff" title="White" aria-label="White"></button>
+        <button type="button" data-c="#e4e6ea" style="background:#e4e6ea" title="Light grey" aria-label="Light grey"></button>
+        <button type="button" data-c="#b9d6f2" style="background:#b9d6f2" title="Light blue" aria-label="Light blue"></button>
+        <button type="button" data-c="#2f6fd0" style="background:#2f6fd0" title="Blue" aria-label="Blue"></button>
+        <button type="button" data-c="#d62f2f" style="background:#d62f2f" title="Red" aria-label="Red"></button>
+        <label class="chk">Custom <input type="color" id="bg" value="#ffffff"></label>
+      </div>
+    </div>
+
+    <div class="grp">
+      <h2>Position</h2>
+      <div id="pos" class="two"></div>
+      <div class="row">
+        <button class="btn" id="fit" type="button">Auto-fit head and shoulders</button>
+        <label class="chk"><input type="checkbox" id="gd" checked> Show head guide</label>
+      </div>
+    </div>
+
+    <div class="grp">
+      <h2>Adjust image</h2>
+      <div id="adj" class="two"></div>
+      <div class="row"><button class="link" id="reset" type="button">Reset adjustments</button></div>
+    </div>
+
+    <div class="grp">
+      <h2>Text watermark</h2>
+      <div class="row">
+        <input type="text" id="wtxt" maxlength="40" placeholder="Type text, e.g. your studio name" aria-label="Watermark text">
+        <input type="color" id="wcol" value="#ffffff" aria-label="Text colour">
+        <select id="wpos" aria-label="Text position">
+          <option value="bottom">Bottom edge</option>
+          <option value="center">Diagonal, centre</option>
+          <option value="tile">Diagonal, repeated</option>
+        </select>
+      </div>
+      <div id="wm" class="two"></div>
+    </div>
+
+    <div class="grp">
+      <h2>Download</h2>
+      <div class="row">
+        <select id="fmt" aria-label="File format"><option value="jpg">JPG</option><option value="png">PNG</option></select>
+        <button class="btn pri" id="dl" type="button">Download photo</button>
+        <button class="btn" id="dls" type="button">Download 4 × 6 in print sheet</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>Photo rules differ by country and by application. Check the official requirements before you print.</footer>
+
+<script>
+const $=i=>document.getElementById(i),
+  mk=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c},
+  CDN='https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation@0.1.1675465747/',
+  S={src:null,cut:null,px:[413,531]},
+  cv=$('cv'),cx=cv.getContext('2d',{willReadFrequently:true}),
+  SL={
+    pos:[['zoom','Zoom',40,300,100],['px','Move left / right',-100,100,0],['py','Move up / down',-100,100,0]],
+    adj:[['bri','Brightness',-100,100,0],['con','Contrast',-100,100,0],['sat','Saturation',-100,100,0],['warm','Warmth',-100,100,0],['shp','Sharpness',0,100,0]],
+    wm:[['wop','Opacity',0,100,25],['wsz','Text size',2,20,6]]
+  };
+
+for(const k in SL)SL[k].forEach(([id,l,mn,mx,v])=>$(k).insertAdjacentHTML('beforeend',
+  `<label class="sl">${l}<output id="o_${id}">${v}</output><input type="range" id="${id}" min="${mn}" max="${mx}" value="${v}"></label>`));
+
+const say=t=>$('status').textContent=t,
+  setSl=(id,v)=>{$(id).value=v;$('o_'+id).textContent=Math.round(v)},
+  busy=(on,t)=>{$('frame').classList.toggle('scanning',on);if(t)say(t)};
+let q=0;
+const redraw=()=>{if(!q)q=requestAnimationFrame(()=>{q=0;draw()})};
+
+/* ---------- loading ---------- */
+const decode=b=>new Promise((ok,no)=>{const u=URL.createObjectURL(b),im=new Image();im.onload=()=>{URL.revokeObjectURL(u);ok(im)};im.onerror=()=>{URL.revokeObjectURL(u);no()};im.src=u});
+const fromHeic=async f=>{ /* converts iPhone HEIC/HEIF photos, loaded only when needed */
+  if(!window.heic2any)await new Promise((ok,no)=>{const t=document.createElement('script');t.src='https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js';t.onload=ok;t.onerror=no;document.head.appendChild(t)});
+  const r=await heic2any({blob:f,toType:'image/jpeg',quality:.92});return Array.isArray(r)?r[0]:r;
+};
+function setSrc(src){
+  const m=Math.min(1,1600/Math.max(src.width,src.height)),c=mk(Math.round(src.width*m),Math.round(src.height*m));
+  c.getContext('2d').drawImage(src,0,0,c.width,c.height);
+  S.src=c;S.cut=null;cv.hidden=false;$('drop').hidden=true;$('guide').hidden=!$('gd').checked;
+  setSl('zoom',100);setSl('px',0);setSl('py',0);draw();removeBg();
+}
+async function load(f){
+  if(!f)return;
+  stopCam();say('Opening your photo…');
+  const heic=/hei[cf]/i.test(f.type)||/\.hei[cf]$/i.test(f.name||'');let im;
+  try{
+    if(heic){say('Converting iPhone photo…');im=await decode(await fromHeic(f))}
+    else try{im=await decode(f)}catch(e){say('Converting photo…');im=await decode(await fromHeic(f))}
+  }catch(e){return say('This file could not be opened as a photo. Try another image, or take a new photo with the camera.')}
+  try{setSrc(im)}catch(e){say('Something went wrong while preparing the photo: '+(e&&e.message||e))}
+}
+let stream;
+function stopCam(){
+  if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;
+  $('vid').hidden=true;$('cambar').hidden=true;$('drop').hidden=!!S.src;cv.hidden=!S.src;$('guide').hidden=!(S.src&&$('gd').checked);
+}
+async function startCam(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return say('The camera is not available in this browser. Use "Upload a photo" and choose your camera there.');
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1920},height:{ideal:1920}},audio:false})}
+  catch(e){return say('Camera access was blocked. Allow the camera in your browser settings, or upload a photo instead.')}
+  const v=$('vid');v.srcObject=stream;v.play();v.hidden=false;$('cambar').hidden=false;$('drop').hidden=true;cv.hidden=true;$('guide').hidden=false;
+  say('Centre your face in the oval, look straight at the camera, then press Capture.');
+}
+$('cam').onclick=$('cam2').onclick=startCam;
+$('stop').onclick=()=>{stopCam();say('Camera closed.')};
+$('snap').onclick=()=>{const v=$('vid');if(!v.videoWidth)return;const c=mk(v.videoWidth,v.videoHeight);c.getContext('2d').drawImage(v,0,0);stopCam();setSrc(c)};
+$('file').onchange=e=>{load(e.target.files[0]);e.target.value=''};
+$('frame').ondragover=e=>e.preventDefault();
+$('frame').ondrop=e=>{e.preventDefault();load(e.dataTransfer.files[0])};
+
+/* ---------- background removal ---------- */
+let seg,aiBad=0,aiFail=null;
+const onErr=e=>{if(aiFail)aiFail();if(e.preventDefault)e.preventDefault();return true};
+addEventListener('error',onErr);addEventListener('unhandledrejection',onErr);
+const loadAI=()=>window.SelfieSegmentation?Promise.resolve():new Promise((ok,no)=>{
+  const t=document.createElement('script');t.src=CDN+'selfie_segmentation.js';t.crossOrigin='anonymous';t.onload=ok;t.onerror=no;document.head.appendChild(t);
+});
+const aiCut=()=>new Promise(async(ok,no)=>{
+  if(aiBad)return no();
+  const fail=()=>{clearTimeout(t);aiFail=null;aiBad=1;no()},t=setTimeout(fail,20000);
+  aiFail=fail;
+  try{
+    await loadAI();
+    seg=seg||new SelfieSegmentation({locateFile:f=>CDN+f});seg.setOptions({modelSelection:0});
+    seg.onResults(r=>{
+      try{
+        clearTimeout(t);aiFail=null;
+        const w=S.src.width,h=S.src.height,c=mk(w,h),x=c.getContext('2d');
+        x.drawImage(r.segmentationMask,0,0,w,h);x.globalCompositeOperation='source-in';x.drawImage(S.src,0,0);
+        const id=x.getImageData(0,0,w,h),d=id.data;let n=0;
+        for(let i=3;i<d.length;i+=4){let a=d[i]/255;a=a<.35?0:a>.65?1:(a-.35)/.3;d[i]=a*255;n+=a}
+        n/=w*h;if(n<.02||n>.985)return no();
+        x.putImageData(id,0,0);ok(c);
+      }catch(e){no()}
+    });
+    seg.send({image:S.src}).catch(fail);
+  }catch(e){fail()}
+});
+
+function edgeCut(){ /* fallback: removes a plain background by flood-filling from the edges */
+  const w=S.src.width,h=S.src.height,c=mk(w,h),x=c.getContext('2d');x.drawImage(S.src,0,0);
+  const id=x.getImageData(0,0,w,h),d=id.data;let r=0,g=0,b=0,n=0;
+  for(let i=0;i<w;i++)for(let y=0;y<3;y++){const k=(y*w+i)*4;r+=d[k];g+=d[k+1];b+=d[k+2];n++}
+  r/=n;g/=n;b/=n;
+  const near=p=>{const k=p*4,a=d[k]-r,e=d[k+1]-g,f=d[k+2]-b;return a*a+e*e+f*f<4500},seen=new Uint8Array(w*h),st=[];
+  for(let i=0;i<w;i++)st.push(i);for(let y=0;y<h;y++)st.push(y*w,y*w+w-1);
+  while(st.length){
+    const p=st.pop();if(seen[p]||!near(p))continue;seen[p]=1;d[p*4+3]=0;const u=p%w;
+    if(u>0)st.push(p-1);if(u<w-1)st.push(p+1);if(p>=w)st.push(p-w);if(p<w*h-w)st.push(p+w);
+  }
+  x.putImageData(id,0,0);return c;
+}
+
+async function removeBg(){
+  if(!S.src)return;
+  busy(1,'Scanning face and body…');
+  try{S.cut=await aiCut();say('Background removed. Pick a colour, then fine-tune below.')}
+  catch(e){try{S.cut=edgeCut()}catch(_){S.cut=null}say('The AI model could not load, so a quick colour-based removal was used. It works best on plain backgrounds.')}
+  autoFit();busy(0);draw();
+}
+$('cut').onclick=removeBg;
+$('orig').onclick=()=>{S.cut=null;setSl('zoom',100);setSl('px',0);setSl('py',0);draw()};
+
+function autoFit(){
+  const c=S.cut;if(!c)return;
+  const w=c.width,h=c.height,d=c.getContext('2d').getImageData(0,0,w,h).data;
+  let x0=w,x1=0,y0=h,y1=0;
+  for(let y=0;y<h;y+=3)for(let x=0;x<w;x+=3)if(d[(y*w+x)*4+3]>128){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+  if(x1<=x0)return;
+  const [W,H]=S.px,bw=x1-x0,base=Math.max(W/w,H/h),z=Math.min(300,Math.max(40,W*.95/bw/base*100)),s=base*z/100,
+    dx=W/2-(x0+bw/2)*s,dy=.07*H-y0*s;
+  setSl('zoom',z);
+  setSl('px',Math.max(-100,Math.min(100,(dx-(W/2-w*s/2))/W*100)));
+  setSl('py',Math.max(-100,Math.min(100,(dy-(H/2-h*s/2))/H*100)));
+}
+$('fit').onclick=()=>{if(S.cut){autoFit();draw()}else say('Remove the background first, then auto-fit can find your head and shoulders.')};
+
+/* ---------- drawing ---------- */
+function adjust(L){
+  const v=i=>+$(i).value,br=v('bri')*1.3,ct=1+v('con')/100,st=1+v('sat')/100,wr=v('warm')*.35,sh=v('shp')/100*1.6;
+  if(!br&&!v('con')&&!v('sat')&&!wr&&!sh)return;
+  const [W,H]=S.px,x=L.getContext('2d'),id=x.getImageData(0,0,W,H),d=id.data;
+  if(sh){
+    const o=new Uint8ClampedArray(d),R=W*4;
+    for(let y=1;y<H-1;y++)for(let p=y*R+4,e=y*R+R-4;p<e;p+=4){
+      if(!o[p+3])continue;
+      const a=o[p-1],b=o[p+7],u=o[p-R+3],dn=o[p+R+3];
+      for(let k=0;k<3;k++){const i=p+k,c=o[i];d[i]=c+sh*(c-((a?o[i-4]:c)+(b?o[i+4]:c)+(u?o[i-R]:c)+(dn?o[i+R]:c))/4)}
+    }
+  }
+  if(br||v('con')||v('sat')||wr)for(let i=0;i<d.length;i+=4){
+    if(!d[i+3])continue;
+    let r=(d[i]+br-128)*ct+128,g=(d[i+1]+br-128)*ct+128,b=(d[i+2]+br-128)*ct+128;
+    const l=.299*r+.587*g+.114*b;
+    d[i]=l+(r-l)*st+wr;d[i+1]=l+(g-l)*st;d[i+2]=b=l+(b-l)*st-wr;
+  }
+  x.putImageData(id,0,0);
+}
+
+function mark(){
+  const t=$('wtxt').value.trim(),o=+$('wop').value/100;if(!t||!o)return;
+  const [W,H]=S.px,f=Math.max(8,W*+$('wsz').value/100),m=$('wpos').value;
+  cx.save();cx.globalAlpha=o;cx.fillStyle=$('wcol').value;cx.font=`700 ${f}px system-ui,sans-serif`;cx.textAlign='center';cx.textBaseline='middle';
+  if(m=='bottom')cx.fillText(t,W/2,H-f*1.1,W*.94);
+  else{
+    cx.translate(W/2,H/2);cx.rotate(-.5);
+    if(m=='center')cx.fillText(t,0,0,W*1.3);
+    else{const tw=cx.measureText(t).width+f*2;for(let y=-H;y<=H;y+=f*3)for(let x=-W;x<=W;x+=tw)cx.fillText(t,x+(Math.round(y/(f*3))&1?tw/2:0),y)}
+  }
+  cx.restore();
+}
+
+function draw(){
+  const im=S.cut||S.src;if(!im)return;
+  const [W,H]=S.px;
+  if(cv.width!=W||cv.height!=H){cv.width=W;cv.height=H}
+  const L=mk(W,H),lx=L.getContext('2d'),s=Math.max(W/im.width,H/im.height)*$('zoom').value/100;
+  lx.imageSmoothingQuality='high';
+  lx.drawImage(im,W/2-im.width*s/2+$('px').value/100*W,H/2-im.height*s/2+$('py').value/100*H,im.width*s,im.height*s);
+  adjust(L);
+  cx.globalAlpha=1;cx.fillStyle=$('bg').value;cx.fillRect(0,0,W,H);cx.drawImage(L,0,0);
+  mark();
+}
+
+/* ---------- controls ---------- */
+document.addEventListener('input',e=>{if(e.target.type=='range')$('o_'+e.target.id).textContent=e.target.value;redraw()});
+$('size').onchange=()=>{
+  const [a,b]=$('size').value.split('x').map(Number);
+  S.px=[Math.round(a/25.4*300),Math.round(b/25.4*300)];
+  $('frame').style.setProperty('--r',S.px[0]/S.px[1]);
+  if(S.cut)autoFit();redraw();
+};
+document.querySelectorAll('.sw button').forEach(b=>b.onclick=()=>{$('bg').value=b.dataset.c;redraw()});
+$('gd').onchange=()=>$('guide').hidden=!($('gd').checked&&S.src);
+$('reset').onclick=()=>{SL.adj.forEach(a=>setSl(a[0],a[4]));redraw()};
+const rot=c=>{const r=mk(c.height,c.width),x=r.getContext('2d');x.translate(r.width,0);x.rotate(Math.PI/2);x.drawImage(c,0,0);return r};
+$('rot').onclick=()=>{if(!S.src)return;S.src=rot(S.src);if(S.cut){S.cut=rot(S.cut);autoFit()}redraw()};
+
+/* ---------- download ---------- */
+function save(c,name){
+  const jp=$('fmt').value=='jpg';
+  c.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+(jp?'.jpg':'.png');a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},jp?'image/jpeg':'image/png',.95);
+}
+$('dl').onclick=()=>{if(!S.src)return say('Choose a photo first.');draw();save(cv,'passport-photo-'+$('size').value)};
+$('dls').onclick=()=>{
+  if(!S.src)return say('Choose a photo first.');
+  draw();
+  const [W,H]=S.px,g=16,m=30;let best;
+  for(const [PW,PH] of [[1200,1800],[1800,1200]]){
+    const c=Math.floor((PW-2*m+g)/(W+g)),r=Math.floor((PH-2*m+g)/(H+g));
+    if(!best||c*r>best.c*best.r)best={PW,PH,c,r};
+  }
+  const sh=mk(best.PW,best.PH),x=sh.getContext('2d'),ox=(best.PW-(best.c*W+(best.c-1)*g))/2,oy=(best.PH-(best.r*H+(best.r-1)*g))/2;
+  x.fillStyle='#fff';x.fillRect(0,0,best.PW,best.PH);x.strokeStyle='#bbb';
+  for(let i=0;i<best.c;i++)for(let j=0;j<best.r;j++){const px=ox+i*(W+g),py=oy+j*(H+g);x.drawImage(cv,px,py);x.strokeRect(px+.5,py+.5,W-1,H-1)}
+  save(sh,'passport-sheet-4x6');
+  say(`Print sheet saved with ${best.c*best.r} photos. Print at 100% scale on 4 × 6 in paper.`);
+};
+</script>
+</body>
+</html>
